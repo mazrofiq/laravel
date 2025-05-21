@@ -14,7 +14,7 @@ class UserController extends Controller
             'title' => 'judul',
             'nama' => 'rafik'
         ];
-        return view('user.profile', $dat);
+        return view('user.profile', $data);
     }
 
     public function b2bToken(){

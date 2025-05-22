@@ -18,24 +18,25 @@ class UserController extends Controller
     }
 
     public function b2bToken(){
-        $dateTime = gmdate("Y-m-d H:i:s");
-        $isoDateTime = date(DateTime::ATOM, strtotime($dateTime));
-        $dateTimeFinal = substr($isoDateTime, 0, 19) . "Z";
-        $clientId = "BRN-0225-1714113997400";
-        $dataSign = $clientId."|".$dateTimeFinal;
-        signatureToken($dataSign);
-        $Body = array(
-            'responseCode' => '2007300',
-            'responseMessage' => 'Successful',
-            'accessToken' => token(),
-            'tokenType' => 'Bearer',
-            'expiresIn' => 900
-        );
+        // $dateTime = gmdate("Y-m-d H:i:s");
+        // $isoDateTime = date(DateTime::ATOM, strtotime($dateTime));
+        // $dateTimeFinal = substr($isoDateTime, 0, 19) . "Z";
+        // $clientId = "BRN-0225-1714113997400";
+        // $dataSign = $clientId."|".$dateTimeFinal;
+        // signatureToken($dataSign);
+        // $Body = array(
+        //     'responseCode' => '2007300',
+        //     'responseMessage' => 'Successful',
+        //     'accessToken' => token(),
+        //     'tokenType' => 'Bearer',
+        //     'expiresIn' => 900
+        // );
 
-        header("X-CLIENT-KEY:". $clientId );
-        header("X-TIMESTAMP:".$dateTimeFinal );
-        echo json_encode($Body);
-        echo $dateTimeFinal;
+        // header("X-CLIENT-KEY:". $clientId );
+        // header("X-TIMESTAMP:".$dateTimeFinal );
+        // echo json_encode($Body);
+        // echo $dateTimeFinal;
+        echo "test aja";
     }
     private function signatureToken($dataSign): String
     {

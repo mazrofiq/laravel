@@ -14,30 +14,38 @@ class UserController extends Controller
             'title' => 'judul',
             'nama' => 'rafik'
         ];
+        $dateTime = gmdate("Y-m-d H:i:s");
+        // echo $dateTime;
+        // $isoDateTime = date(DateTime::ATOM, strtotime($dateTime));
+        $isoDateTime = date(DATE_ISO8601, strtotime($dateTime));
+        $dateTimeFinal = substr($isoDateTime, 0, 19) . "Z";
+        echo $dateTimeFinal;
+        // $clientId = "BRN-0225-1714113997400";
+        // $dataSign = $clientId."|".$dateTimeFinal;
         return view('user.profile', $data);
     }
 
     public function b2bToken(){
         $dateTime = gmdate("Y-m-d H:i:s");
-        echo $dateTime;
-        // $isoDateTime = date(DateTime::ATOM, strtotime($dateTime));
-        // $dateTimeFinal = substr($isoDateTime, 0, 19) . "Z";
-        // $clientId = "BRN-0225-1714113997400";
-        // $dataSign = $clientId."|".$dateTimeFinal;
         
-        // signatureToken($dataSign);
+        $isoDateTime = date(DATE_ISO8601, strtotime($dateTime));
+        $dateTimeFinal = substr($isoDateTime, 0, 19) . "Z";
+        $clientId = "BRN-0225-1714113997400";
+        $dataSign = $clientId."|".$dateTimeFinal;
         
-        // $Body = array(
-        //     'responseCode' => '2007300',
-        //     'responseMessage' => 'Successful',
-        //     'accessToken' => token(),
-        //     'tokenType' => 'Bearer',
-        //     'expiresIn' => 900
-        // );
+        signatureToken($dataSign);
+        
+        $Body = array(
+            'responseCode' => '2007300',
+            'responseMessage' => 'Successful',
+            'accessToken' => token(),
+            'tokenType' => 'Bearer',
+            'expiresIn' => 900
+        );
 
-        // header("X-CLIENT-KEY:". $clientId );
-        // header("X-TIMESTAMP:".$dateTimeFinal );
-        // echo json_encode($Body);
+        header("X-CLIENT-KEY:". $clientId );
+        header("X-TIMESTAMP:".$dateTimeFinal );
+        echo json_encode($Body);
         // echo $dateTimeFinal;
         // echo "test aja";
     }

@@ -23,8 +23,9 @@ class UserController extends Controller
         $dateTimeFinal = substr($isoDateTime, 0, 19) . "Z";
         $clientId = "BRN-0225-1714113997400";
         $dataSign = $clientId."|".$dateTimeFinal;
-        signatureToken($dataSign);
-        echo signatureToken;
+        echo $dateTimeFinal;
+        // signatureToken($dataSign);
+        // echo signatureToken;
         // $Body = array(
         //     'responseCode' => '2007300',
         //     'responseMessage' => 'Successful',

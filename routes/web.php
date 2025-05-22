@@ -7,4 +7,4 @@ use App\Http\Controllers\UserController;
 //     return view('welcome');
 // });
 Route::get('/user', [UserController::class, 'show']);
-Route::post('/authorization/v1/access-token/b2b', [UserController::class, 'b2bToken']);
+Route::get('/authorization/v1/access-token/b2b', [UserController::class, 'b2bToken']);

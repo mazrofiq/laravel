@@ -24,21 +24,22 @@ class UserController extends Controller
         $clientId = "BRN-0225-1714113997400";
         $dataSign = $clientId."|".$dateTimeFinal;
         signatureToken($dataSign);
-        $Body = array(
-            'responseCode' => '2007300',
-            'responseMessage' => 'Successful',
-            'accessToken' => token(),
-            'tokenType' => 'Bearer',
-            'expiresIn' => 900
-        );
+        echo signatureToken;
+        // $Body = array(
+        //     'responseCode' => '2007300',
+        //     'responseMessage' => 'Successful',
+        //     'accessToken' => token(),
+        //     'tokenType' => 'Bearer',
+        //     'expiresIn' => 900
+        // );
 
-        header("X-CLIENT-KEY:". $clientId );
-        header("X-TIMESTAMP:".$dateTimeFinal );
-        echo json_encode($Body);
-        echo $dateTimeFinal;
+        // header("X-CLIENT-KEY:". $clientId );
+        // header("X-TIMESTAMP:".$dateTimeFinal );
+        // echo json_encode($Body);
+        // echo $dateTimeFinal;
         // echo "test aja";
     }
-    private function signatureToken($dataSign): String
+    public function signatureToken($dataSign): String
     {
         $priv = <<<EOD
 -----BEGIN RSA PRIVATE KEY-----
@@ -75,7 +76,7 @@ EOD;
         $signature = base64_encode($binary_signature);
         return $signature;
     }
-    private function token():string
+    public function token():string
     {
         $data = [
             'exp' => time() + 900, 

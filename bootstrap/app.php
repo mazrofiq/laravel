@@ -12,10 +12,10 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         //
-        $middleware->validateCsrfTokens(except: [
-            'stripe/*',
-            'https://testing-api-snap-main-fhj653.laravel.cloud/authorization/v1/access-token/b2b'
-        ]);
+        // $middleware->validateCsrfTokens(except: [
+        //     'stripe/*',
+        //     'https://testing-api-snap-main-fhj653.laravel.cloud/authorization/v1/access-token/b2b'
+        // ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

@@ -23,31 +23,41 @@ class UserController extends Controller
     public function b2bToken(){
         $notificationHeader = getallheaders();
         $notificationBody = file_get_contents('php://input');
-        // var_dump($notificationHeader);
-        // var_dump($notificationBody);die;
-        // echo $notificationHeader['X-Timestamp']; die;
-        $dateTime = gmdate("Y-m-d H:i:s");
-        
-        $isoDateTime = date(DATE_ISO8601, strtotime($dateTime));
-        // $dateTimeFinal = substr($isoDateTime, 0, 19) . "Z";
-        $dateTimeFinal = $notificationHeader['X-Timestamp'];
-
+        $dateTimel = $notificationHeader['X-TIMESTAMP'];
         $clientId = "BRN-0225-1714113997400";
-        $dataSign = $clientId."|".$dateTimeFinal;
-        $signature = $notificationHeader['X-SIGNATURE'];
-        // signatureToken($dataSign, $signature);
-        dd( signatureToken($dataSign, $signature));
+        $dataSign = $clientId."|".$dateTimel;
+        $signature = base64_decode($notificationHeader['X-SIGNATURE']);
         
-        $Body = array(
-            'responseCode' => '2007300',
-            'responseMessage' => 'Successful',
-            'accessToken' => token(),
-            'tokenType' => 'Bearer',
-            'expiresIn' => 900
-        );
+        $sig = signatureToken($dataSign, $signature);
+        if($sig){
+            $dateTime = gmdate("Y-m-d H:i:s");
+            $isoDateTime = date(DATE_ISO8601, strtotime($dateTime));
+            $dateTimeFinal = substr($isoDateTime, 0, 19) . "Z";
+            $Body = array(
+                'responseCode' => '2007300',
+                'responseMessage' => 'Successful',
+                'accessToken' => token(),
+                'tokenType' => 'Bearer',
+                'expiresIn' => 900
+            );
 
-        header("X-CLIENT-KEY:". $clientId );
-        header("X-TIMESTAMP:".$dateTimeFinal );
-        echo json_encode($Body);
+            header("X-CLIENT-KEY:". $clientId );
+            header("X-TIMESTAMP:".$dateTimeFinal );
+            echo json_encode($Body);
+        }else{
+            echo "Signature not match";
+        }
+        
+        // $Body = array(
+        //     'responseCode' => '2007300',
+        //     'responseMessage' => 'Successful',
+        //     'accessToken' => token(),
+        //     'tokenType' => 'Bearer',
+        //     'expiresIn' => 900
+        // );
+
+        // header("X-CLIENT-KEY:". $clientId );
+        // header("X-TIMESTAMP:".$dateTimeFinal );
+        // echo json_encode($Body);
     }
 }

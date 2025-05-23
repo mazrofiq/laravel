@@ -21,8 +21,9 @@ class UserController extends Controller
     }
 
     public function b2bToken(){
-        $notificationHeader = getallheaders();
-        $notificationBody = file_get_contents('php://input');
+        echo "testing";
+        // $notificationHeader = getallheaders();
+        // $notificationBody = file_get_contents('php://input');
             dd($notificationHeader);
         // $dateTimel = $notificationHeader['X-TIMESTAMP'];
         // $clientId = "BRN-0225-1714113997400";

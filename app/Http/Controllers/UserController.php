@@ -21,15 +21,15 @@ class UserController extends Controller
     }
 
     public function b2bToken(){
-        echo "Signature not match";
-        // $notificationHeader = getallheaders();
-        // $notificationBody = file_get_contents('php://input');
-        // $dateTimel = $notificationHeader['X-TIMESTAMP'];
-        // $clientId = "BRN-0225-1714113997400";
-        // $dataSign = $clientId."|".$dateTimel;
-        // $signature = base64_decode($notificationHeader['X-SIGNATURE']);
+        $notificationHeader = getallheaders();
+        $notificationBody = file_get_contents('php://input');
+        $dateTimel = $notificationHeader['X-TIMESTAMP'];
+        $clientId = "BRN-0225-1714113997400";
+        $dataSign = $clientId."|".$dateTimel;
+        $signature = base64_decode($notificationHeader['X-SIGNATURE']);
         
-        // $sig = signatureToken($dataSign, $signature);
+        $sig = signatureToken($dataSign, $signature);
+        echo $sig;
         // if($sig){
         //     $dateTime = gmdate("Y-m-d H:i:s");
         //     $isoDateTime = date(DATE_ISO8601, strtotime($dateTime));

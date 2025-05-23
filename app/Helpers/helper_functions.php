@@ -39,6 +39,7 @@ EOD;
         $algo = "SHA256";
         $binary_signature = "";
         openssl_sign($dataSign, $binary_signature, $priv, $algo);
+        // $ok = openssl_verify($data, $signature, $pubkeyid);
         $signature = base64_encode($binary_signature);
         return $signature;
 }

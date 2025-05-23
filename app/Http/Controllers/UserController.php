@@ -31,24 +31,24 @@ class UserController extends Controller
         $signature = base64_decode($notificationHeader['X-Signature']);
         
         $sig = signatureToken($dataSign, $signature);
-        echo $sig;
-        // if($sig){
-        //     $dateTime = gmdate("Y-m-d H:i:s");
-        //     $isoDateTime = date(DATE_ISO8601, strtotime($dateTime));
-        //     $dateTimeFinal = substr($isoDateTime, 0, 19) . "Z";
-        //     $Body = array(
-        //         'responseCode' => '2007300',
-        //         'responseMessage' => 'Successful',
-        //         'accessToken' => token(),
-        //         'tokenType' => 'Bearer',
-        //         'expiresIn' => 900
-        //     );
+        // echo $sig;
+        if($sig){
+            $dateTime = gmdate("Y-m-d H:i:s");
+            $isoDateTime = date(DATE_ISO8601, strtotime($dateTime));
+            $dateTimeFinal = substr($isoDateTime, 0, 19) . "Z";
+            $Body = array(
+                'responseCode' => '2007300',
+                'responseMessage' => 'Successful',
+                'accessToken' => token(),
+                'tokenType' => 'Bearer',
+                'expiresIn' => 900
+            );
 
-        //     header("X-CLIENT-KEY:". $clientId );
-        //     header("X-TIMESTAMP:".$dateTimeFinal );
-        //     echo json_encode($Body);
-        // }else{
-        //     echo "Signature not match";
-        // }
+            header("X-CLIENT-KEY:". $clientId );
+            header("X-TIMESTAMP:".$dateTimeFinal );
+            echo json_encode($Body);
+        }else{
+            echo "Signature not match";
+        }
     }
 }

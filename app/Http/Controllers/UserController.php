@@ -23,8 +23,9 @@ class UserController extends Controller
     public function b2bToken(){
         $notificationHeader = getallheaders();
         $notificationBody = file_get_contents('php://input');
-        var_dump($notificationHeader);
-        var_dump($notificationBody);die;
+        // var_dump($notificationHeader);
+        // var_dump($notificationBody);die;
+        echo $notificationHeader['X-Timestamp']; die;
         $dateTime = gmdate("Y-m-d H:i:s");
         
         $isoDateTime = date(DATE_ISO8601, strtotime($dateTime));

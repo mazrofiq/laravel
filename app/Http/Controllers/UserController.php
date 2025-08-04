@@ -53,10 +53,43 @@ class UserController extends Controller
         }
     }
     public function virtualAccount(){
+        $order = gmdate("Y-m-d H:i:s");
         $notificationHeader = getallheaders();
         $notificationBody = file_get_contents('php://input');
-        var_dump($notificationHeader); 
-        var_dump($notificationBody);
-        die;
+        // var_dump($notificationHeader); 
+        // var_dump($notificationBody);
+        // die;
+        $dateTimel = $notificationHeader['X-Timestamp'];
+        $sig = $notificationHeader['X-Signature'];
+        $client = $notificationHeader['X-Partner-Id'];
+
+        $partner_serviceId = json_decode($notificationBody)->{'partnerServiceId'};
+        $cust_no = json_decode($notificationBody)->{'customerNo'};
+        $va_number = json_decode($notificationBody)->{'virtualAccountNo'};
+        $channel = json_decode($notificationBody)->{'additionalInfo'}->{'channel'};
+        
+
+
+        $Body = ['responseCode' => '2002400',
+                    'responseMessage' => 'Successful',
+                    'virtualAccountData' => [
+                        'partnerServiceId' => $partner_serviceId,
+                        'customerNo' => $cust_no,
+                        'virtualAccountNo' => $va_number,
+                        'virtualAccountName' => 'test',
+                        'totalAmount' => [
+                            'value' => '0.00',
+                            'currency' => 'IDR'
+                        ],
+                        'virtualAccountTrxType' => 'O',
+                        'additionalInfo' => [
+                            'channel' => $channel,
+                            'trxId' => 'inv-'.$order
+                        ],
+                        'inquiryRequestId' => 'ord-'.$order
+                    ]
+                ]
+                ;
+        echo json_encode($Body);
     }
 }

@@ -52,4 +52,10 @@ class UserController extends Controller
             echo "Signature not match";
         }
     }
+    public function virtualAccount(){
+        $notificationHeader = getallheaders();
+        $notificationBody = file_get_contents('php://input');
+        d($notificationHeader);
+        dd($notificationBody);
+    }
 }

@@ -56,9 +56,6 @@ class UserController extends Controller
         $order = gmdate("Y-m-d H:i:s");
         $notificationHeader = getallheaders();
         $notificationBody = file_get_contents('php://input');
-        // var_dump($notificationHeader); 
-        // var_dump($notificationBody);
-        // die;
         $dateTimel = $notificationHeader['X-Timestamp'];
         $sig = $notificationHeader['X-Signature'];
         $client = $notificationHeader['X-Partner-Id'];

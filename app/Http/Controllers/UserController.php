@@ -53,7 +53,7 @@ class UserController extends Controller
         }
     }
     public function virtualAccount(){
-        $order = gmdate("Y-m-d H:i:s");
+        $order = gmdate("YmdHis");
         $notificationHeader = getallheaders();
         $notificationBody = file_get_contents('php://input');
         $dateTimel = $notificationHeader['X-Timestamp'];

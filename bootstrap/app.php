@@ -14,7 +14,9 @@ return Application::configure(basePath: dirname(__DIR__))
         //
         $middleware->validateCsrfTokens(except: [
             'https://testing-api-snap-main-fhj653.laravel.cloud/authorization/v1/access-token/b2b',
-            'https://testing-api-snap-main-fhj653.laravel.cloud/v1.1/transfer-va/inquiry'
+            'http://127.0.0.1:8000/authorization/v1/access-token/b2b',
+            'https://testing-api-snap-main-fhj653.laravel.cloud/v1.1/transfer-va/inquiry',
+            'http://127.0.0.1:8000/v1.1/transfer-va/inquiry'
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

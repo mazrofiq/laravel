@@ -55,7 +55,8 @@ class UserController extends Controller
     public function virtualAccount(){
         $notificationHeader = getallheaders();
         $notificationBody = file_get_contents('php://input');
-        d($notificationHeader);
-        dd($notificationBody);
+        var_dump($notificationHeader); 
+        var_dump($notificationBody);
+        die;
     }
 }

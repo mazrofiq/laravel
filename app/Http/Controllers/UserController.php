@@ -70,8 +70,7 @@ class UserController extends Controller
         $Body = ['responseCode' => '2002400',
                     'responseMessage' => 'Successful',
                     'virtualAccountData' => [
-                        'partnerServiceId' => $partner_serviceId,,
-                        'trxId' => 'inv-'.$order,
+                        'partnerServiceId' => $partner_serviceId,
                         'customerNo' => $cust_no,
                         'virtualAccountNo' => $va_number,
                         'virtualAccountName' => 'test',
@@ -81,7 +80,8 @@ class UserController extends Controller
                         ],
                         'virtualAccountTrxType' => 'O',
                         'additionalInfo' => [
-                            'channel' => $channel
+                            'channel' => $channel,
+                            'trxId' => 'inv-'.$order
                         ],
                         'inquiryRequestId' => 'ord-'.$order
                     ]

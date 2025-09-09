@@ -87,8 +87,8 @@ class UserController extends Controller
         //             ]
         //         ]
         //         ;
-        $Body = ['responseCode' => '4042414',
-                    'responseMessage' => 'Bill has been paid'
+        $Body = ['responseCode' => '4042419',
+                    'responseMessage' => 'Bill Expired'
                 ]
                 ;
         echo json_encode($Body);

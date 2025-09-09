@@ -79,11 +79,11 @@ class UserController extends Controller
                             'currency' => 'IDR'
                         ],
                         'virtualAccountTrxType' => 'O',
-                        'additionalInfo' => [
-                            'channel' => $channel,
-                            'trxId' => 'inv-'.$order
-                        ],
                         'inquiryRequestId' => 'ord-'.$order
+                    ],
+                    'additionalInfo' => [
+                        'channel' => $channel,
+                        'trxId' => 'inv-'.$order
                     ]
                 ]
                 ;

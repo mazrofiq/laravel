@@ -67,24 +67,28 @@ class UserController extends Controller
         
 
 
-        $Body = ['responseCode' => '2002400',
-                    'responseMessage' => 'Successful',
-                    'virtualAccountData' => [
-                        'partnerServiceId' => $partner_serviceId,
-                        'customerNo' => $cust_no,
-                        'virtualAccountNo' => $va_number,
-                        'virtualAccountName' => 'test',
-                        'totalAmount' => [
-                            'value' => '0.00',
-                            'currency' => 'IDR'
-                        ],
-                        'virtualAccountTrxType' => 'O',
-                        'inquiryRequestId' => 'ord-'.$order
-                    ],
-                    'additionalInfo' => [
-                        'channel' => $channel,
-                        'trxId' => 'inv-'.$order
-                    ]
+        // $Body = ['responseCode' => '2002400',
+        //             'responseMessage' => 'Successful',
+        //             'virtualAccountData' => [
+        //                 'partnerServiceId' => $partner_serviceId,
+        //                 'customerNo' => $cust_no,
+        //                 'virtualAccountNo' => $va_number,
+        //                 'virtualAccountName' => 'test',
+        //                 'totalAmount' => [
+        //                     'value' => '0.00',
+        //                     'currency' => 'IDR'
+        //                 ],
+        //                 'virtualAccountTrxType' => 'O',
+        //                 'inquiryRequestId' => 'ord-'.$order
+        //             ],
+        //             'additionalInfo' => [
+        //                 'channel' => $channel,
+        //                 'trxId' => 'inv-'.$order
+        //             ]
+        //         ]
+        //         ;
+        $Body = ['responseCode' => '4042414',
+                    'responseMessage' => 'Bill has been paid'
                 ]
                 ;
         echo json_encode($Body);

@@ -52,6 +52,10 @@ class UserController extends Controller
         //     echo "Signature not match";
         // }
 
+            $dateTime = gmdate("Y-m-d H:i:s");
+            $isoDateTime = date(DATE_ISO8601, strtotime($dateTime));
+            $dateTimeFinal = substr($isoDateTime, 0, 19) . "Z";
+
             $Body = ['responseCode' => '2007300',
                 'responseMessage' => 'Successful',
                 'accessToken' => token(),

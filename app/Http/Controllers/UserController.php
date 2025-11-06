@@ -76,10 +76,10 @@ class UserController extends Controller
                         'virtualAccountNo' => $va_number,
                         'virtualAccountName' => 'test',
                         'totalAmount' => [
-                            'value' => '10000.00',
+                            'value' => '0.00',
                             'currency' => 'IDR'
                         ],
-                        'virtualAccountTrxType' => 'C',
+                        'virtualAccountTrxType' => 'O',
                         'inquiryRequestId' => 'ord-'.$order
                     ],
                     'additionalInfo' => [

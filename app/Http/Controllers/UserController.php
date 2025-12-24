@@ -26,13 +26,14 @@ class UserController extends Controller
         $notificationBody = file_get_contents('php://input');
             // dd($notificationHeader);
         $dateTimel = $notificationHeader['X-Timestamp'];
-        $clientId = "BRN-0289-1728962045839";
-        // $clientId = "BRN-0225-1714113997400";
+        // $clientId = "BRN-0289-1728962045839";
+        $clientId = "BRN-0230-1650508963111";
         $dataSign = $clientId."|".$dateTimel;
+
         $signature = base64_decode($notificationHeader['X-Signature']);
         
         $sig = signatureToken($dataSign, $signature);
-        // echo $sig;
+        echo "hasil : ".$sig;
         if($sig){
             $dateTime = gmdate("Y-m-d H:i:s");
             $isoDateTime = date(DATE_ISO8601, strtotime($dateTime));

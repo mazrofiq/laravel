@@ -35,6 +35,7 @@ class UserController extends Controller
         
         $sig = signatureToken($dataSign, $signature);
         // echo "hasil : ".$sig;
+        var_dump($notificationHeader);
         if($sig){
             $dateTime = gmdate("Y-m-d H:i:s");
             $isoDateTime = date(DATE_ISO8601, strtotime($dateTime));

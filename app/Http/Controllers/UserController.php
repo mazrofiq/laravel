@@ -97,6 +97,7 @@ class UserController extends Controller
 
             return view('user.result', [
                 'is_error' => true,
+                'invoice_number' => $body['order']['invoice_number'],
                 'error_code' => $responseData['error']['code'] ?? '',
                 'error_message' => $responseData['error']['message'] ?? '',
                 'error_type' => $responseData['error']['type'] ?? ''

@@ -89,6 +89,10 @@
             <h2>⚠️ Request Validation Failed</h2>
 
             <table>
+                <tr>
+                    <td>Invoice Number</td>
+                    <td>{{ $invoice_number }}</td>
+                </tr>
 
                 <tr>
                     <td>Error Code</td>

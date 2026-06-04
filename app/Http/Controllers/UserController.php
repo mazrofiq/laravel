@@ -27,7 +27,7 @@ class UserController extends Controller
     }
 
     public function charge(Request $request){
-        $clientId = 'BRN-0242-1763721186902';
+        $clientId = 'BRN-0242-1763721186902xx';
         $secretKey = 'SK-k0Sklx8ZZCqlZpOyPDq7';
         // $clientId = 'BRN-0225-1714113997400';
         // $secretKey = 'SK-r6gc3JZOyf6g9INSIMe4';

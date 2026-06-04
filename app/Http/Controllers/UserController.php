@@ -93,7 +93,7 @@ class UserController extends Controller
 
         $responseData = $response->json();
 
-        if (isset($responseData['error'])) {
+        if (isset($responseData['error']) && !isset($responseData['payment']['response_code'])) {
 
             return view('user.result', [
                 'is_error' => true,

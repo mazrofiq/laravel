@@ -133,13 +133,13 @@ button:hover {
                 <label>Transaction Type</label>
 
                 <div class="radio-group">
-                    <label>
+                    <!-- <label>
                         <input type="radio"
                             name="transactionType"
                             value="SALE"
                             onchange="changeAction()">
                         SALE
-                    </label>
+                    </label> -->
 
                     <label>
                         <input type="radio"

@@ -8,6 +8,8 @@ use PhpParser\Node\Expr\Cast\String_;
 use App\Helpers\myGlobalFunction; 
 use App\Helpers\signatureToken;
 use App\Helpers\token;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Http;
 
 class UserController extends Controller
 {
@@ -18,6 +20,101 @@ class UserController extends Controller
             'nama' => 'rafik'
         ];
         return view('user.profile', $data);
+    }
+
+    public function getthreeds(Request $request){
+        dd($request->all());
+    }
+
+    public function charge(Request $request){
+        $clientId = 'BRN-0242-1763721186902';
+        $secretKey = 'SK-k0Sklx8ZZCqlZpOyPDq7';
+
+        $requestId = (string) Str::uuid();
+        $timestamp = gmdate('Y-m-d\TH:i:s\Z');
+
+        $body = [
+            "order" => [
+                "invoice_number" => "INV-" . time(),
+                "amount" => $request->amount
+                // "amount" => (int) $request->amount
+            ],
+            "payment" => [
+                "type" => $request->transactionType
+            ],
+            "customer" => [
+                "name" => $request->card_holder
+            ],
+            "card" => [
+                "number" => preg_replace('/\s+/', '', $request->card_number),
+                // "expiry_month" => substr($request->expiry, 0, 2),
+                // "expiry_year" => '20' . substr($request->expiry, -2),
+                "expiry" => $request->expiry,
+                "cvv" => $request->cvv
+            ]
+        ];
+
+        // $requestBody = json_encode($body, JSON_UNESCAPED_SLASHES);
+        $digestValue = base64_encode(hash('sha256', json_encode($body), true));
+        $targetPath = '/credit-card/charge';
+
+        /**
+         * Sesuaikan formula signature dengan dokumentasi DOKU yang diberikan untuk merchant Anda.
+         */
+        $stringToSign =
+            "Client-Id:" . $clientId . "\n" .
+            "Request-Id:" . $requestId . "\n" .
+            "Request-Timestamp:" . $timestamp . "\n" .
+            "Request-Target:".$targetPath ."\n".
+            "Digest:".$digestValue;
+
+        $signature = "HMACSHA256=" . base64_encode(
+            hash_hmac(
+                'sha256',
+                $stringToSign,
+                $secretKey,
+                true
+            )
+        );
+
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json',
+            'Client-Id' => $clientId,
+            'Request-Id' => $requestId,
+            'Request-Timestamp' => $timestamp,
+            'Signature' => $signature,
+        ])->post(
+            'https://api.doku.com/credit-card/charge',
+            $body
+        );
+
+        $responseData = $response->json();
+
+        $status = $responseData['payment']['status'] ?? '';
+        $responseCode = $responseData['payment']['response_code'] ?? '';
+        $responseMessage = $responseData['payment']['response_message'] ?? '';
+        $card = $responseData['card']['masked'] ?? '';
+        $amount = $responseData['order']['amount'] ?? '';
+        $invoice_number = $responseData['order']['invoice_number'] ?? '';
+        return view('user.result', [
+            'status' => $responseData['payment']['status'] ?? 'FAILED',
+            'response_code' => $responseData['payment']['response_code'] ?? '-',
+            'card' => $responseData['card']['masked'] ?? '-',
+            'amount' => $responseData['order']['amount'] ?? '-',
+            'invoice_number' => $responseData['order']['invoice_number'] ?? '-',
+            'response_message' => $responseData['payment']['response_message'] ?? 'Unknown Error'
+        ]);
+
+        // return response()->json([
+        //     'request_header' => [
+        //         'Client-Id' => $clientId,
+        //         'Request-Id' => $requestId,
+        //         'Request-Timestamp' => $timestamp,
+        //         'Signature' => $signature
+        //     ],
+        //     'request_body' => $body,
+        //     'response' => $response->json()
+        // ]);
     }
 
     public function b2bToken(){

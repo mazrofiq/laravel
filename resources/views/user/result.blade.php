@@ -6,37 +6,48 @@
     <title>Payment Result</title>
 
     <style>
+
         body{
             font-family: Arial, sans-serif;
             background:#f5f5f5;
-            margin:0;
             padding:40px;
         }
 
         .container{
-            max-width:600px;
+            max-width:700px;
             margin:auto;
         }
 
         .card{
-            background:#fff;
+            background:white;
             border-radius:10px;
             padding:25px;
             box-shadow:0 2px 10px rgba(0,0,0,.1);
         }
 
         .success{
-            color:#28a745;
+            background:#d4edda;
+            border-left:5px solid #28a745;
         }
 
         .failed{
-            color:#dc3545;
+            background:#f8d7da;
+            border-left:5px solid #dc3545;
+        }
+
+        .error{
+            background:#fff3cd;
+            border-left:5px solid #ffc107;
+        }
+
+        h2{
+            margin-top:0;
         }
 
         table{
             width:100%;
             border-collapse:collapse;
-            margin-top:20px;
+            margin-top:15px;
         }
 
         td{
@@ -45,78 +56,164 @@
         }
 
         td:first-child{
+            width:200px;
             font-weight:bold;
-            width:180px;
         }
 
         .btn{
             display:inline-block;
             margin-top:20px;
             background:#007bff;
-            color:#fff;
-            padding:10px 20px;
+            color:white;
             text-decoration:none;
+            padding:10px 20px;
             border-radius:5px;
         }
 
         .btn:hover{
             background:#0056b3;
         }
+
     </style>
+
 </head>
 <body>
 
 <div class="container">
 
-    <div class="card">
+    {{-- ERROR RESPONSE --}}
+    @if(isset($is_error) && $is_error)
 
-        <h2>
-            Payment Result
-        </h2>
+        <div class="card error">
 
-        <h3 class="{{ $status == 'SUCCESS' ? 'success' : 'failed' }}">
-            {{ $status }}
-        </h3>
+            <h2>⚠️ Request Validation Failed</h2>
 
-        <table>
-            <tr>
-                <td>Invoice</td>
-                <td>{{ $invoice_number }}</td>
-            </tr>
+            <table>
 
-            <tr>
-                <td>Amount</td>
-                <td>{{ $amount }}</td>
-            </tr>
+                <tr>
+                    <td>Error Code</td>
+                    <td>{{ $error_code }}</td>
+                </tr>
 
-            <tr>
-                <td>Card Masked</td>
-                <td>{{ $card }}</td>
-            </tr>
+                <tr>
+                    <td>Error Type</td>
+                    <td>{{ $error_type }}</td>
+                </tr>
 
-            <tr>
-                <td>Status</td>
-                <td>{{ $status }}</td>
-            </tr>
+                <tr>
+                    <td>Error Message</td>
+                    <td>{{ $error_message }}</td>
+                </tr>
 
-            <tr>
-                <td>Response Code</td>
-                <td>{{ $response_code }}</td>
-            </tr>
+            </table>
 
-            <tr>
-                <td>Response Message</td>
-                <td>{{ $response_message }}</td>
-            </tr>
-            
+            @if($error_message == 'Luhn Validation')
 
-        </table>
+                <p>
+                    The card number entered is invalid.
+                    Please verify the card number and try again.
+                </p>
 
-        <a href="{{ url('/user') }}" class="btn">
-            Back to Payment
-        </a>
+            @endif
 
-    </div>
+        </div>
+
+    {{-- SUCCESS RESPONSE --}}
+    @elseif($status == 'SUCCESS')
+
+        <div class="card success">
+
+            <h2>✅ Payment Successful</h2>
+
+            <table>
+
+                <tr>
+                    <td>Status</td>
+                    <td>{{ $status }}</td>
+                </tr>
+                <tr>
+                    <td>Invoice</td>
+                    <td>{{ $invoice_number }}</td>
+                </tr>
+                <tr>
+                    <td>Amount</td>
+                    <td>{{ $amount }}</td>
+                </tr>
+
+                <tr>
+                    <td>Card Masked</td>
+                    <td>{{ $card }}</td>
+                </tr>
+
+                <tr>
+                    <td>Response Code</td>
+                    <td>{{ $response_code }}</td>
+                </tr>
+
+                <tr>
+                    <td>Response Message</td>
+                    <td>{{ $response_message }}</td>
+                </tr>
+
+            </table>
+
+            <p>
+                Thank you. Your payment has been successfully processed.
+            </p>
+
+        </div>
+
+    {{-- FAILED RESPONSE --}}
+    @else
+
+        <div class="card failed">
+
+            <h2>❌ Payment Failed</h2>
+
+            <table>
+
+                <tr>
+                    <td>Status</td>
+                    <td>{{ $status }}</td>
+                </tr>
+                <tr>
+                    <td>Invoice</td>
+                    <td>{{ $invoice_number }}</td>
+                </tr>
+                <tr>
+                    <td>Amount</td>
+                    <td>{{ $amount }}</td>
+                </tr>
+
+                <tr>
+                    <td>Card Masked</td>
+                    <td>{{ $card }}</td>
+                </tr>
+
+                <tr>
+                    <td>Response Code</td>
+                    <td>{{ $response_code }}</td>
+                </tr>
+
+                <tr>
+                    <td>Response Message</td>
+                    <td>{{ $response_message }}</td>
+                </tr>
+
+            </table>
+
+            <p>
+                The transaction could not be completed.
+                Please try another card or contact your issuing bank.
+            </p>
+
+        </div>
+
+    @endif
+
+    <a href="{{ url('/user') }}" class="btn">
+        Back to Payment
+    </a>
 
 </div>
 

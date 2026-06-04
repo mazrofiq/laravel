@@ -29,6 +29,8 @@ class UserController extends Controller
     public function charge(Request $request){
         $clientId = 'BRN-0242-1763721186902';
         $secretKey = 'SK-k0Sklx8ZZCqlZpOyPDq7';
+        // $clientId = 'BRN-0225-1714113997400';
+        // $secretKey = 'SK-r6gc3JZOyf6g9INSIMe4';
 
         $requestId = (string) Str::uuid();
         $timestamp = gmdate('Y-m-d\TH:i:s\Z');
@@ -85,24 +87,29 @@ class UserController extends Controller
             'Signature' => $signature,
         ])->post(
             'https://api.doku.com/credit-card/charge',
+            // 'https://api-sandbox.doku.com/credit-card/charge',
             $body
         );
 
         $responseData = $response->json();
 
-        $status = $responseData['payment']['status'] ?? '';
-        $responseCode = $responseData['payment']['response_code'] ?? '';
-        $responseMessage = $responseData['payment']['response_message'] ?? '';
-        $card = $responseData['card']['masked'] ?? '';
-        $amount = $responseData['order']['amount'] ?? '';
-        $invoice_number = $responseData['order']['invoice_number'] ?? '';
+        if (isset($responseData['error'])) {
+
+            return view('user.result', [
+                'is_error' => true,
+                'error_code' => $responseData['error']['code'] ?? '',
+                'error_message' => $responseData['error']['message'] ?? '',
+                'error_type' => $responseData['error']['type'] ?? ''
+            ]);
+        }
         return view('user.result', [
+            'is_error' => false,
             'status' => $responseData['payment']['status'] ?? 'FAILED',
-            'response_code' => $responseData['payment']['response_code'] ?? '-',
-            'card' => $responseData['card']['masked'] ?? '-',
-            'amount' => $responseData['order']['amount'] ?? '-',
-            'invoice_number' => $responseData['order']['invoice_number'] ?? '-',
-            'response_message' => $responseData['payment']['response_message'] ?? 'Unknown Error'
+            'response_code' => $responseData['payment']['response_code'] ?? '',
+            'card' => $responseData['card']['masked'] ?? '',
+            'amount' => $responseData['order']['amount'] ?? '',
+            'invoice_number' => $responseData['order']['invoice_number'] ?? '',
+            'response_message' => $responseData['payment']['response_message'] ?? ''
         ]);
 
         // return response()->json([

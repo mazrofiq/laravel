@@ -13,6 +13,82 @@ use Illuminate\Support\Facades\Http;
 
 class UserController extends Controller
 {
+    // private $clientId;
+    // private $baseUrl;
+
+    // public function __construct()
+    // {
+    //     $this->clientId = env('DOKU_CLIENT_ID');
+    //     $this->baseUrl = env('DOKU_BASE_URL');
+    // }
+    private function renderPaymentResult(array $responseData, string $invoiceNumber = '')
+    {
+        if (
+            isset($responseData['error']) &&
+            !isset($responseData['payment']['response_code'])
+        ) {
+
+            return view('user.result', [
+                'is_error' => true,
+                'invoice_number' => $invoiceNumber,
+                'error_code' => $responseData['error']['code'] ?? '',
+                'error_message' => $responseData['error']['message'] ?? '',
+                'error_type' => $responseData['error']['type'] ?? ''
+            ]);
+        }
+
+        return view('user.result', [
+            'is_error' => false,
+            'status' => $responseData['payment']['status'] ?? 'FAILED',
+            'response_code' => $responseData['payment']['response_code'] ?? '',
+            'card' => $responseData['card']['masked'] ?? '',
+            'amount' => $responseData['order']['amount'] ?? '',
+            'invoice_number' => $responseData['order']['invoice_number'] ?? '',
+            'response_message' => $responseData['payment']['response_message'] ?? ''
+        ]);
+    }
+
+    private function processCharge(
+        $invoiceNumber, 
+        $authenticationId,
+        $customerName,
+        $type,
+        $cvv,
+        $amount
+        ){
+        session()->flush();
+        $targetPath = '/credit-card/charge';
+
+        $body = [
+            "order" => [
+                "invoice_number" => $invoiceNumber,
+                "amount" => $amount
+            ],
+            "payment" => [
+                "type" => $type
+            ],
+            "customer" => [
+                "name" => $customerName
+            ],
+            "three_dsecure" => [
+                "authentication_id" => $authenticationId
+            ],
+            "card" => [
+                "cvv" => $cvv
+            ]
+        ];
+
+        $signData = dokuApiRequest(
+            $body,
+            $targetPath
+        );
+        $responseData = $signData->json();
+
+        return $this->renderPaymentResult(
+            $responseData,
+            $invoiceNumber
+        );
+    }
     public function show(): View
     {
         $data = [
@@ -23,97 +99,34 @@ class UserController extends Controller
     }
 
     public function getthreeds(Request $request){
-        dd($request->all());
-    }
-
-    public function charge(Request $request){
-        $clientId = 'BRN-0242-1763721186902xx';
-        $secretKey = 'SK-k0Sklx8ZZCqlZpOyPDq7';
-        // $clientId = 'BRN-0225-1714113997400';
-        // $secretKey = 'SK-r6gc3JZOyf6g9INSIMe4';
-
-        $requestId = (string) Str::uuid();
-        $timestamp = gmdate('Y-m-d\TH:i:s\Z');
+        $targetPath = '/credit-card/check-three-d-secure';
+        $invoiceNumber = "INV-" . time();
 
         $body = [
             "order" => [
-                "invoice_number" => "INV-" . time(),
                 "amount" => $request->amount
-                // "amount" => (int) $request->amount
             ],
+            "invoice_number" => $invoiceNumber,
             "payment" => [
                 "type" => $request->transactionType
             ],
-            "customer" => [
-                "name" => $request->card_holder
+            "three_dsecure" => [
+                "callback_url_success" =>  url('/payment/charge/'. $invoiceNumber),
+                "callback_url_failed" =>  url('/payment/failed/'. $invoiceNumber),
             ],
             "card" => [
                 "number" => preg_replace('/\s+/', '', $request->card_number),
-                // "expiry_month" => substr($request->expiry, 0, 2),
-                // "expiry_year" => '20' . substr($request->expiry, -2),
-                "expiry" => $request->expiry,
-                "cvv" => $request->cvv
+                "expiry" => $request->expiry
             ]
         ];
 
-        // $requestBody = json_encode($body, JSON_UNESCAPED_SLASHES);
-        $digestValue = base64_encode(hash('sha256', json_encode($body), true));
-        $targetPath = '/credit-card/charge';
-
-        /**
-         * Sesuaikan formula signature dengan dokumentasi DOKU yang diberikan untuk merchant Anda.
-         */
-        $stringToSign =
-            "Client-Id:" . $clientId . "\n" .
-            "Request-Id:" . $requestId . "\n" .
-            "Request-Timestamp:" . $timestamp . "\n" .
-            "Request-Target:".$targetPath ."\n".
-            "Digest:".$digestValue;
-
-        $signature = "HMACSHA256=" . base64_encode(
-            hash_hmac(
-                'sha256',
-                $stringToSign,
-                $secretKey,
-                true
-            )
+        $signData = dokuApiRequest(
+            $body,
+            $targetPath
         );
-
-        $response = Http::withHeaders([
-            'Content-Type' => 'application/json',
-            'Client-Id' => $clientId,
-            'Request-Id' => $requestId,
-            'Request-Timestamp' => $timestamp,
-            'Signature' => $signature,
-        ])->post(
-            'https://api.doku.com/credit-card/charge',
-            // 'https://api-sandbox.doku.com/credit-card/charge',
-            $body
-        );
-
-        $responseData = $response->json();
-
-        if (isset($responseData['error']) && !isset($responseData['payment']['response_code'])) {
-
-            return view('user.result', [
-                'is_error' => true,
-                'invoice_number' => $body['order']['invoice_number'],
-                'error_code' => $responseData['error']['code'] ?? '',
-                'error_message' => $responseData['error']['message'] ?? '',
-                'error_type' => $responseData['error']['type'] ?? ''
-            ]);
-        }
-        return view('user.result', [
-            'is_error' => false,
-            'status' => $responseData['payment']['status'] ?? 'FAILED',
-            'response_code' => $responseData['payment']['response_code'] ?? '',
-            'card' => $responseData['card']['masked'] ?? '',
-            'amount' => $responseData['order']['amount'] ?? '',
-            'invoice_number' => $responseData['order']['invoice_number'] ?? '',
-            'response_message' => $responseData['payment']['response_message'] ?? ''
-        ]);
-
-        // return response()->json([
+        
+        $responseData = $signData->json();
+        // return $signData()->json([
         //     'request_header' => [
         //         'Client-Id' => $clientId,
         //         'Request-Id' => $requestId,
@@ -123,16 +136,93 @@ class UserController extends Controller
         //     'request_body' => $body,
         //     'response' => $response->json()
         // ]);
+        if (isset($responseData['error']) && !isset($responseData['payment']['response_code'])) {
+
+                return $this->renderPaymentResult(
+                $responseData,
+                $invoiceNumber
+            );
+        }
+        
+        $authenticationUrl = $responseData['three_dsecure']['authentication_url'];
+        session([
+                    'authentication_id' =>$responseData['three_dsecure']['authentication_id'],
+                    'type' => $request->transactionType,
+                    'cvv' => $request->cvv,
+                    'amount' => $request->amount,
+                    'customerName' => $request->card_holder
+                ]);
+        
+        return redirect()->away($authenticationUrl);
+    }
+    public function paymentCharge($invoice){
+            $data = [
+                    'authentication_id' => session('authentication_id'),
+                    'type' => session('type'),
+                    'cvv' => session('cvv'),
+                    'amount' => session('amount'),
+                    'customerName' => session('customerName'),
+                ];
+            return $this->processCharge(
+                $invoice,
+                $data['authentication_id'],
+                $data['customerName'],
+                $data['type'],
+                $data['cvv'],
+                $data['amount']
+            );
+    }
+    public function paymentFailed($invoice){
+        $data = [
+                    'amount' => session('amount')
+                ];
+        return view('user.threeDSfailed', [
+            'amount' => $data['amount'] ?? '',
+            'invoice_number' => $invoice ?? ''
+        ]);
+    }
+
+    public function charge(Request $request){
+        // $clientId = 'BRN-0242-1763721186902xx';
+        // $secretKey = 'SK-k0Sklx8ZZCqlZpOyPDq7';
+        $invoiceNumber = "INV-" . time();
+        $targetPath = '/credit-card/charge';
+
+        $body = [
+            "order" => [
+                "invoice_number" => $invoiceNumber,
+                "amount" => $request->amount
+            ],
+            "payment" => [
+                "type" => $request->transactionType
+            ],
+            "customer" => [
+                "name" => $request->card_holder
+            ],
+            "card" => [
+                "number" => preg_replace('/\s+/', '', $request->card_number),
+                "expiry" => $request->expiry,
+                "cvv" => $request->cvv
+            ]
+        ];
+
+        $signData = dokuApiRequest(
+            $body,
+            $targetPath
+        );
+
+        $responseData = $signData->json();
+        return $this->renderPaymentResult(
+            $responseData,
+            $invoiceNumber
+        );
+
     }
 
     public function b2bToken(){
-        
         $notificationHeader = getallheaders();
         $notificationBody = file_get_contents('php://input');
-            // dd($notificationHeader);
         $dateTimel = $notificationHeader['X-Timestamp'];
-        // $clientId = "BRN-0289-1728962045839";
-        // $clientId = "BRN-0225-1714113997400";
         $clientId =  $notificationHeader['X-Client-Key'];
         $dataSign = $clientId."|".$dateTimel;
 

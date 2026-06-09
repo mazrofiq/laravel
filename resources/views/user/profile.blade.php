@@ -133,21 +133,42 @@ button:hover {
                 <label>Transaction Type</label>
 
                 <div class="radio-group">
-                    <!-- <label>
+                    <label>
                         <input type="radio"
                             name="transactionType"
                             value="SALE"
+                            checked
                             onchange="changeAction()">
-                        SALE
-                    </label> -->
+                        SL
+                    </label>
 
                     <label>
                         <input type="radio"
                             name="transactionType"
                             value="MOTO"
-                            checked
                             onchange="changeAction()">
-                        MOTO
+                        MT
+                    </label>
+                    <label>
+                        <input type="radio"
+                            name="transactionType"
+                            value="AUTHORIZE"
+                            onchange="changeAction()">
+                        AUTH
+                    </label>
+                    <label>
+                        <input type="radio"
+                            name="transactionType"
+                            value="NON 3DS SALE"
+                            onchange="changeAction()">
+                        N SL
+                    </label>
+                    <label>
+                        <input type="radio"
+                            name="transactionType"
+                            value="NON 3DS AUTHORIZE"
+                            onchange="changeAction()">
+                        N AU
                     </label>
                 </div>
             </div>
@@ -247,10 +268,19 @@ function submitPayment() {
 
     const form = document.getElementById('paymentForm');
 
-    if (transactionType === 'SALE') {
+    if (transactionType === 'SALE'  || transactionType === 'AUTHORIZE') {
         form.action = '/getthreeds';
-    } else if (transactionType === 'MOTO') {
+    } else if (transactionType === 'MOTO' || transactionType === 'NON 3DS SALE') {
         form.action = '/charge';
+        if (transactionType === 'NON 3DS SALE') {
+            transactionType = 'SALE';
+
+            // Update value yang dikirim ke backend
+            document.querySelector('input[name="transactionType"]:checked').value = 'SALE';
+        }else if(transactionType === 'NON 3DS AUTHORIZE'){
+            transactionType = 'AUTHORIZE';
+            document.querySelector('input[name="transactionType"]:checked').value = 'AUTHORIZE';
+        }
     }
 
     form.submit();

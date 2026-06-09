@@ -36,3 +36,50 @@ function token()
     $token = base64_encode(json_encode($data));
     return $token;
 }
+
+if (!function_exists('dokuApiRequest')) {
+
+    function dokuApiRequest(
+        array $body,
+        string $targetPath,
+
+    ) {
+
+        $clientId = env('DOKU_CLIENT_ID');
+        $secretKey = env('DOKU_SECRET_KEY');
+        $getUrl = env('DOKU_BASE_URL');
+        $requestId = (string) Str::uuid();
+        $timestamp = gmdate('Y-m-d\TH:i:s\Z');
+
+        $digest = base64_encode(
+            hash('sha256', json_encode($body), true)
+        );
+
+        $stringToSign =
+            "Client-Id:$clientId\n" .
+            "Request-Id:$requestId\n" .
+            "Request-Timestamp:$timestamp\n" .
+            "Request-Target:$targetPath\n" .
+            "Digest:$digest";
+
+        $signature = "HMACSHA256=" . base64_encode(
+            hash_hmac(
+                'sha256',
+                $stringToSign,
+                $secretKey,
+                true
+            )
+        );
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json',
+            'Client-Id' => $clientId,
+            'Request-Id' => $requestId,
+            'Request-Timestamp' => $timestamp,
+            'Signature' => $signature,
+        ])->post(
+            $getUrl.$targetPath,
+            $body
+        );
+        return $response;
+    }
+}

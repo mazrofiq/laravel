@@ -48,139 +48,139 @@ class UserController extends Controller
         ]);
     }
 
-    private function processCharge(
-        $invoiceNumber, 
-        $authenticationId,
-        $customerName,
-        $type,
-        $cvv,
-        $amount
-        ){
-        session()->flush();
-        $targetPath = '/credit-card/charge';
+    // private function processCharge(
+    //     $invoiceNumber, 
+    //     $authenticationId,
+    //     $customerName,
+    //     $type,
+    //     $cvv,
+    //     $amount
+    //     ){
+    //     session()->flush();
+    //     $targetPath = '/credit-card/charge';
 
-        $body = [
-            "order" => [
-                "invoice_number" => $invoiceNumber,
-                "amount" => $amount
-            ],
-            "payment" => [
-                "type" => $type
-            ],
-            "customer" => [
-                "name" => $customerName
-            ],
-            "three_dsecure" => [
-                "authentication_id" => $authenticationId
-            ],
-            "card" => [
-                "cvv" => $cvv
-            ]
-        ];
+    //     $body = [
+    //         "order" => [
+    //             "invoice_number" => $invoiceNumber,
+    //             "amount" => $amount
+    //         ],
+    //         "payment" => [
+    //             "type" => $type
+    //         ],
+    //         "customer" => [
+    //             "name" => $customerName
+    //         ],
+    //         "three_dsecure" => [
+    //             "authentication_id" => $authenticationId
+    //         ],
+    //         "card" => [
+    //             "cvv" => $cvv
+    //         ]
+    //     ];
 
-        $signData = dokuApiRequest(
-            $body,
-            $targetPath
-        );
-        $responseData = $signData->json();
+    //     $signData = dokuApiRequest(
+    //         $body,
+    //         $targetPath
+    //     );
+    //     $responseData = $signData->json();
 
-        return $this->renderPaymentResult(
-            $responseData,
-            $invoiceNumber
-        );
-    }
-    public function show(): View
-    {
-        $data = [
-            'title' => 'judul',
-            'nama' => 'rafik'
-        ];
-        return view('user.profile', $data);
-    }
+    //     return $this->renderPaymentResult(
+    //         $responseData,
+    //         $invoiceNumber
+    //     );
+    // }
+    // public function show(): View
+    // {
+    //     $data = [
+    //         'title' => 'judul',
+    //         'nama' => 'rafik'
+    //     ];
+    //     return view('user.profile', $data);
+    // }
 
-    public function getthreeds(Request $request){
-        $targetPath = '/credit-card/check-three-d-secure';
-        $invoiceNumber = "INV-" . time();
+    // public function getthreeds(Request $request){
+    //     $targetPath = '/credit-card/check-three-d-secure';
+    //     $invoiceNumber = "INV-" . time();
 
-        $body = [
-            "order" => [
-                "amount" => $request->amount
-            ],
-            "invoice_number" => $invoiceNumber,
-            "payment" => [
-                "type" => $request->transactionType
-            ],
-            "three_dsecure" => [
-                "callback_url_success" =>  url('/payment/charge/'. $invoiceNumber),
-                "callback_url_failed" =>  url('/payment/failed/'. $invoiceNumber),
-            ],
-            "card" => [
-                "number" => preg_replace('/\s+/', '', $request->card_number),
-                "expiry" => $request->expiry
-            ]
-        ];
+    //     $body = [
+    //         "order" => [
+    //             "amount" => $request->amount
+    //         ],
+    //         "invoice_number" => $invoiceNumber,
+    //         "payment" => [
+    //             "type" => $request->transactionType
+    //         ],
+    //         "three_dsecure" => [
+    //             "callback_url_success" =>  url('/payment/charge/'. $invoiceNumber),
+    //             "callback_url_failed" =>  url('/payment/failed/'. $invoiceNumber),
+    //         ],
+    //         "card" => [
+    //             "number" => preg_replace('/\s+/', '', $request->card_number),
+    //             "expiry" => $request->expiry
+    //         ]
+    //     ];
 
-        $signData = dokuApiRequest(
-            $body,
-            $targetPath
-        );
+    //     $signData = dokuApiRequest(
+    //         $body,
+    //         $targetPath
+    //     );
         
-        $responseData = $signData->json();
-        // return $signData()->json([
-        //     'request_header' => [
-        //         'Client-Id' => $clientId,
-        //         'Request-Id' => $requestId,
-        //         'Request-Timestamp' => $timestamp,
-        //         'Signature' => $signature
-        //     ],
-        //     'request_body' => $body,
-        //     'response' => $response->json()
-        // ]);
-        if (isset($responseData['error']) && !isset($responseData['payment']['response_code'])) {
+    //     $responseData = $signData->json();
+    //     // return $signData()->json([
+    //     //     'request_header' => [
+    //     //         'Client-Id' => $clientId,
+    //     //         'Request-Id' => $requestId,
+    //     //         'Request-Timestamp' => $timestamp,
+    //     //         'Signature' => $signature
+    //     //     ],
+    //     //     'request_body' => $body,
+    //     //     'response' => $response->json()
+    //     // ]);
+    //     if (isset($responseData['error']) && !isset($responseData['payment']['response_code'])) {
 
-                return $this->renderPaymentResult(
-                $responseData,
-                $invoiceNumber
-            );
-        }
+    //             return $this->renderPaymentResult(
+    //             $responseData,
+    //             $invoiceNumber
+    //         );
+    //     }
         
-        $authenticationUrl = $responseData['three_dsecure']['authentication_url'];
-        session([
-                    'authentication_id' =>$responseData['three_dsecure']['authentication_id'],
-                    'type' => $request->transactionType,
-                    'cvv' => $request->cvv,
-                    'amount' => $request->amount,
-                    'customerName' => $request->card_holder
-                ]);
+    //     $authenticationUrl = $responseData['three_dsecure']['authentication_url'];
+    //     session([
+    //                 'authentication_id' =>$responseData['three_dsecure']['authentication_id'],
+    //                 'type' => $request->transactionType,
+    //                 'cvv' => $request->cvv,
+    //                 'amount' => $request->amount,
+    //                 'customerName' => $request->card_holder
+    //             ]);
         
-        return redirect()->away($authenticationUrl);
-    }
-    public function paymentCharge($invoice){
-            $data = [
-                    'authentication_id' => session('authentication_id'),
-                    'type' => session('type'),
-                    'cvv' => session('cvv'),
-                    'amount' => session('amount'),
-                    'customerName' => session('customerName'),
-                ];
-            return $this->processCharge(
-                $invoice,
-                $data['authentication_id'],
-                $data['customerName'],
-                $data['type'],
-                $data['cvv'],
-                $data['amount']
-            );
-    }
-    public function paymentFailed($invoice){
-        $data = [
-                    'amount' => session('amount')
-                ];
-        return view('user.threeDSfailed', [
-            'amount' => $data['amount'] ?? '',
-            'invoice_number' => $invoice ?? ''
-        ]);
-    }
+    //     return redirect()->away($authenticationUrl);
+    // }
+    // public function paymentCharge($invoice){
+    //         $data = [
+    //                 'authentication_id' => session('authentication_id'),
+    //                 'type' => session('type'),
+    //                 'cvv' => session('cvv'),
+    //                 'amount' => session('amount'),
+    //                 'customerName' => session('customerName'),
+    //             ];
+    //         return $this->processCharge(
+    //             $invoice,
+    //             $data['authentication_id'],
+    //             $data['customerName'],
+    //             $data['type'],
+    //             $data['cvv'],
+    //             $data['amount']
+    //         );
+    // }
+    // public function paymentFailed($invoice){
+    //     $data = [
+    //                 'amount' => session('amount')
+    //             ];
+    //     return view('user.threeDSfailed', [
+    //         'amount' => $data['amount'] ?? '',
+    //         'invoice_number' => $invoice ?? ''
+    //     ]);
+    // }
 
     public function charge(Request $request){
         // $clientId = 'BRN-0242-1763721186902xx';

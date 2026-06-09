@@ -13,14 +13,14 @@ use Illuminate\Support\Facades\Http;
 
 class UserController extends Controller
 {
-    // private $clientId;
-    // private $baseUrl;
+    private $clientId;
+    private $baseUrl;
 
-    // public function __construct()
-    // {
-    //     $this->clientId = env('DOKU_CLIENT_ID');
-    //     $this->baseUrl = env('DOKU_BASE_URL');
-    // }
+    public function __construct()
+    {
+        $this->clientId = env('DOKU_CLIENT_ID');
+        $this->baseUrl = env('DOKU_BASE_URL');
+    }
     private function renderPaymentResult(array $responseData, string $invoiceNumber = '')
     {
         if (
@@ -126,16 +126,6 @@ class UserController extends Controller
         );
         
         $responseData = $signData->json();
-        // return $signData()->json([
-        //     'request_header' => [
-        //         'Client-Id' => $clientId,
-        //         'Request-Id' => $requestId,
-        //         'Request-Timestamp' => $timestamp,
-        //         'Signature' => $signature
-        //     ],
-        //     'request_body' => $body,
-        //     'response' => $response->json()
-        // ]);
         if (isset($responseData['error']) && !isset($responseData['payment']['response_code'])) {
 
                 return $this->renderPaymentResult(
@@ -187,6 +177,8 @@ class UserController extends Controller
         // $secretKey = 'SK-k0Sklx8ZZCqlZpOyPDq7';
         // SK-zFAAkOXyFWeNEfnesaTJ
         // MCH-0003-8521835709053
+        $clientId = $this->clientId;
+        $clientId = $this->clientId;
         $invoiceNumber = "INV-" . time();
         $targetPath = '/credit-card/charge';
 
@@ -213,7 +205,11 @@ class UserController extends Controller
             $targetPath
         );
 
-        $responseData = $signData->json();
+        // $responseData = $signData->json();
+         return $signData()->json([
+            'request_body' => $body,
+            'response' => $signData->json()
+        ]);
         return $this->renderPaymentResult(
             $responseData,
             $invoiceNumber

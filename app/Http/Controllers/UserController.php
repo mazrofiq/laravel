@@ -183,11 +183,11 @@ class UserController extends Controller
     }
 
     public function charge(Request $request){
-        dd($request);
         // $clientId = 'BRN-0242-1763721186902xx';
         // $secretKey = 'SK-k0Sklx8ZZCqlZpOyPDq7';
-        // SK-zFAAkOXyFWeNEfnesaTJ
-        // MCH-0003-8521835709053
+        // $clientId = 'BRN-0118-1780559864110
+        // $secretKey = SK-ln85qKqxFQ6QYmqH2Uc0
+        dd($request->all());
         $invoiceNumber = "INV-" . time();
         $targetPath = '/credit-card/charge';
 

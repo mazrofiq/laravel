@@ -89,14 +89,14 @@ class UserController extends Controller
     //         $invoiceNumber
     //     );
     // }
-    // public function show(): View
-    // {
-    //     $data = [
-    //         'title' => 'judul',
-    //         'nama' => 'rafik'
-    //     ];
-    //     return view('user.profile', $data);
-    // }
+    public function show(): View
+    {
+        $data = [
+            'title' => 'judul',
+            'nama' => 'rafik'
+        ];
+        return view('user.profile', $data);
+    }
 
     // public function getthreeds(Request $request){
     //     $targetPath = '/credit-card/check-three-d-secure';

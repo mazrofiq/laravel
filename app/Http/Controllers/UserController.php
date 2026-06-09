@@ -183,6 +183,7 @@ class UserController extends Controller
     }
 
     public function charge(Request $request){
+        dd($request);
         // $clientId = 'BRN-0242-1763721186902xx';
         // $secretKey = 'SK-k0Sklx8ZZCqlZpOyPDq7';
         // SK-zFAAkOXyFWeNEfnesaTJ
@@ -214,7 +215,7 @@ class UserController extends Controller
         );
 
         $responseData = $signData->json();
-        dd($responseData);
+        // dd($responseData);
         return $this->renderPaymentResult(
             $responseData,
             $invoiceNumber

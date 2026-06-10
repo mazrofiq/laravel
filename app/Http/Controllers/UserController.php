@@ -14,14 +14,14 @@ use Illuminate\Support\Facades\Http;
 
 class UserController extends Controller
 {
-    private $clientId;
-    private $baseUrl;
+    // private $clientId;
+    // private $baseUrl;
 
-    public function __construct()
-    {
-        $this->clientId = env('DOKU_CLIENT_ID');
-        $this->baseUrl = env('DOKU_BASE_URL');
-    }
+    // public function __construct()
+    // {
+    //     $this->clientId = env('DOKU_CLIENT_ID');
+    //     $this->baseUrl = env('DOKU_BASE_URL');
+    // }
     private function renderPaymentResult(array $responseData, string $invoiceNumber = '')
     {
         if (
@@ -186,8 +186,8 @@ class UserController extends Controller
     public function charge(Request $request){
         // $clientId = 'BRN-0242-1763721186902xx';
         // $secretKey = 'SK-k0Sklx8ZZCqlZpOyPDq7';
-        $clientId = 'BRN-0118-1780559864110';
-        $secretKey = 'SK-ln85qKqxFQ6QYmqH2Uc0';
+        // $clientId = 'BRN-0118-1780559864110
+        // $secretKey = SK-ln85qKqxFQ6QYmqH2Uc0
         // dd($request->all());
         $invoiceNumber = "INV-" . time();
         $targetPath = '/credit-card/charge';
@@ -215,12 +215,12 @@ class UserController extends Controller
         //     $targetPath
         // );
 
-        // $clientId = env('DOKU_CLIENT_ID');
-        // $secretKey = env('DOKU_SECRET_KEY');
-        $getUrl = 'https://api-sandbox.doku.com';
+        $clientId = env('DOKU_CLIENT_ID');
+        $secretKey = env('DOKU_SECRET_KEY');
+        $getUrl = env('DOKU_BASE_URL');
         $requestId = (string) Str::uuid();
         $timestamp = gmdate('Y-m-d\TH:i:s\Z');
-        // dd($clientId);
+        dd($clientId);
 
         $digest = base64_encode(
             hash('sha256', json_encode($body), true)

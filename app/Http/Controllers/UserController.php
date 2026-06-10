@@ -215,7 +215,7 @@ class UserController extends Controller
         );
 
         $responseData = $signData->json();
-        // dd($responseData);
+        dd($responseData);
         return $this->renderPaymentResult(
             $responseData,
             $invoiceNumber

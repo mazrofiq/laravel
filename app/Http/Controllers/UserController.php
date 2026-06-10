@@ -8,6 +8,7 @@ use PhpParser\Node\Expr\Cast\String_;
 use App\Helpers\myGlobalFunction; 
 use App\Helpers\signatureToken;
 use App\Helpers\token;
+use App\Helpers\dokuApiRequest;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
 
@@ -219,6 +220,7 @@ class UserController extends Controller
         $getUrl = env('DOKU_BASE_URL');
         $requestId = (string) Str::uuid();
         $timestamp = gmdate('Y-m-d\TH:i:s\Z');
+        dd($clientId);
 
         $digest = base64_encode(
             hash('sha256', json_encode($body), true)

@@ -187,7 +187,7 @@ class UserController extends Controller
         // $secretKey = 'SK-k0Sklx8ZZCqlZpOyPDq7';
         // $clientId = 'BRN-0118-1780559864110
         // $secretKey = SK-ln85qKqxFQ6QYmqH2Uc0
-        dd($request->all());
+        // dd($request->all());
         $invoiceNumber = "INV-" . time();
         $targetPath = '/credit-card/charge';
 

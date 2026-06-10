@@ -220,7 +220,7 @@ class UserController extends Controller
         $getUrl = 'https://api-sandbox.doku.com';
         $requestId = (string) Str::uuid();
         $timestamp = gmdate('Y-m-d\TH:i:s\Z');
-        dd($clientId);
+        // dd($clientId);
 
         $digest = base64_encode(
             hash('sha256', json_encode($body), true)

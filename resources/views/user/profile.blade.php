@@ -270,17 +270,16 @@ function submitPayment() {
 
     if (transactionType === 'SALE'  || transactionType === 'AUTHORIZE') {
         form.action = '/getthreeds';
-    } else if (transactionType === 'MOTO' || transactionType === 'NON 3DS SALE') {
+    } else if (transactionType === 'MOTO') {
         form.action = '/charge';
-        if (transactionType === 'NON 3DS SALE') {
-            transactionType = 'SALE';
-
-            // Update value yang dikirim ke backend
-            document.querySelector('input[name="transactionType"]:checked').value = 'SALE';
-        }else if(transactionType === 'NON 3DS AUTHORIZE'){
-            transactionType = 'AUTHORIZE';
-            document.querySelector('input[name="transactionType"]:checked').value = 'AUTHORIZE';
-        }
+    }else if (transactionType === 'NON 3DS SALE') {
+        transactionType = 'SALE';
+         document.querySelector('input[name="transactionType"]:checked').value = 'SALE';
+        form.action = '/charge';
+    }else if (transactionType === 'NON 3DS AUTHORIZE') {
+        transactionType = 'AUTHORIZE';
+        document.querySelector('input[name="transactionType"]:checked').value = 'AUTHORIZE';
+        form.action = '/charge';
     }
 
     form.submit();

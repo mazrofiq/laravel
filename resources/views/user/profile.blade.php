@@ -261,7 +261,7 @@ expiry.addEventListener('input', function() {
 });
 function submitPayment() {
 
-    const transactionType =
+    let transactionType =
         document.querySelector(
             'input[name="transactionType"]:checked'
         ).value;
@@ -274,11 +274,9 @@ function submitPayment() {
         form.action = '/charge';
     }else if (transactionType === 'NON 3DS SALE') {
         transactionType = 'SALE';
-         document.querySelector('input[name="transactionType"]:checked').value = 'SALE';
         form.action = '/charge';
     }else if (transactionType === 'NON 3DS AUTHORIZE') {
         transactionType = 'AUTHORIZE';
-        document.querySelector('input[name="transactionType"]:checked').value = 'AUTHORIZE';
         form.action = '/charge';
     }
 

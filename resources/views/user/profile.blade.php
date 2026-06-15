@@ -272,8 +272,11 @@ function submitPayment() {
         form.action = '/getthreeds';
     } else if (transactionType === 'NON 3DS SALE') {
         transactionType = 'SALE';
-            alert(transactionType);
-
+            form.action = '/charge';
+    }else if (transactionType === 'MOTO') {
+            form.action = '/charge';
+    }else if (transactionType === 'NON 3DS AUTHORIZE') {
+        transactionType = 'AUTHORIZE';
             form.action = '/charge';
     }
 

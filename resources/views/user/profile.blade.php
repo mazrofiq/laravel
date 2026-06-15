@@ -270,14 +270,11 @@ function submitPayment() {
 
     if (transactionType === 'SALE'  || transactionType === 'AUTHORIZE') {
         form.action = '/getthreeds';
-    } else if (transactionType === 'MOTO') {
-        form.action = '/charge';
-    }else if (transactionType === 'NON 3DS SALE') {
+    } else if (transactionType === 'NON 3DS SALE') {
         transactionType = 'SALE';
-        form.action = '/charge';
-    }else if (transactionType === 'NON 3DS AUTHORIZE') {
-        transactionType = 'AUTHORIZE';
-        form.action = '/charge';
+            alert(transactionType);
+
+            form.action = '/charge';
     }
 
     form.submit();

@@ -136,6 +136,7 @@ button:hover {
                     <label>
                         <input type="radio"
                             name="transactionType"
+                            id="sale"
                             value="SALE"
                             checked
                             onchange="changeAction()">
@@ -145,6 +146,7 @@ button:hover {
                     <label>
                         <input type="radio"
                             name="transactionType"
+                            id="moto"
                             value="MOTO"
                             onchange="changeAction()">
                         MT
@@ -153,20 +155,23 @@ button:hover {
                         <input type="radio"
                             name="transactionType"
                             value="AUTHORIZE"
+                            id="authorize"
                             onchange="changeAction()">
                         AUTH
                     </label>
                     <label>
                         <input type="radio"
                             name="transactionType"
-                            value="NON 3DS SALE"
+                            id="non_sale"
+                            value="SALE"
                             onchange="changeAction()">
                         N SL
                     </label>
                     <label>
                         <input type="radio"
                             name="transactionType"
-                            value="NON 3DS AUTHORIZE"
+                            id="non_authorize"
+                            value="AUTHORIZE"
                             onchange="changeAction()">
                         N AU
                     </label>
@@ -209,7 +214,7 @@ button:hover {
                     required>
             </div>
 
-            <button type="submit" onclick="submitPayment()">
+            <button type="submit">
                 Pay Now
             </button>
 
@@ -259,28 +264,32 @@ expiry.addEventListener('input', function() {
         value || 'MM/YY';
 
 });
-function submitPayment() {
-
-    let transactionType =
-        document.querySelector(
-            'input[name="transactionType"]:checked'
-        ).value;
+function changeAction() {
+    const selectedRadio = document.querySelector(
+        'input[name="transactionType"]:checked'
+    );
 
     const form = document.getElementById('paymentForm');
 
-    if (transactionType === 'SALE'  || transactionType === 'AUTHORIZE') {
+    if (!selectedRadio) return;
+
+    const radioId = selectedRadio.id;
+
+    if (
+        radioId === 'moto' ||
+        radioId === 'non_sale' ||
+        radioId === 'non_authorize'
+    ) {
+        form.action = '/charge';
+    } else if (
+        radioId === 'sale' ||
+        radioId === 'authorize'
+    ) {
         form.action = '/getthreeds';
-    } else if (transactionType === 'NON 3DS SALE') {
-        transactionType = 'SALE';
-            form.action = '/charge';
-    }else if (transactionType === 'MOTO') {
-            form.action = '/charge';
-    }else if (transactionType === 'NON 3DS AUTHORIZE') {
-        transactionType = 'AUTHORIZE';
-            form.action = '/charge';
     }
 
-    form.submit();
+    console.log('Selected:', radioId);
+    console.log('Form Action:', form.action);
 }
 
 </script>

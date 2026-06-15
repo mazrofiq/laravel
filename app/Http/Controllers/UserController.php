@@ -120,7 +120,6 @@ class UserController extends Controller
                 "expiry" => $request->expiry
             ]
         ];
-        dd($body);
 
         $signData = dokuApiRequest(
             $body,
@@ -210,7 +209,7 @@ class UserController extends Controller
                 "cvv" => $request->cvv
             ]
         ];
-        dd($body);
+
         $signData = dokuApiRequest(
             $body,
             $targetPath

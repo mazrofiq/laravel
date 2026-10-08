@@ -276,7 +276,7 @@ class UserController extends Controller
                         'partnerServiceId' => $partner_serviceId,
                         'customerNo' => $cust_no,
                         'virtualAccountNo' => $va_number,
-                        'virtualAccountName' => 't`est',
+                        'virtualAccountName' => 'test',
                         'totalAmount' => [
                             'value' => '0.00',
                             'currency' => 'IDR'
